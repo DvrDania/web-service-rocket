@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
+use rocket::response::status;
 use rocket::serde::json::{json, Json, Value};
 use rocket::State;
 
@@ -13,13 +14,16 @@ fn get_albums(albums: &State<Vec<Album>>) -> Json<Vec<Album>> {
 }
 
 #[get("/albums/<id>")]
-fn get_single_album(id: u32, albums: &State<Vec<Album>>) -> Result<Json<&Album>, Value> {
+fn get_single_album(
+    id: u32,
+    albums: &State<Vec<Album>>,
+) -> Result<Json<&Album>, status::NotFound<Value>> {
     for album in albums.iter() {
         if id == album.id {
             return Ok(Json(album));
         }
     }
-    Err(json!({ "message": "album not found" }))
+    Err(status::NotFound(json!({ "message": "album not found" })))
 }
 
 #[post("/albums")]
