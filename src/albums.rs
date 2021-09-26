@@ -27,7 +27,7 @@ pub fn dummy() -> Vec<Album> {
             id: 3,
             title: String::from("Sarah Vaughan and Clifford Brown"),
             artist: String::from("Sarah Vaughan"),
-            price: 17.99,
+            price: 39.99,
         },
     ];
     albums
