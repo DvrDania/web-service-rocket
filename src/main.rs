@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
+use rocket::http::Status;
 use rocket::response::status;
 use rocket::serde::json::{json, Json, Value};
 use rocket::State;
@@ -30,8 +31,13 @@ fn get_single_album(
 }
 
 #[post("/albums", format = "json", data = "<new>")]
-fn add_album(new: Json<Album>, albums: &State<Arc<Mutex<Vec<Album>>>>) {
+fn add_album(
+    new: Json<Album>,
+    albums: &State<Arc<Mutex<Vec<Album>>>>,
+) -> status::Custom<Json<Album>> {
+    let new_album = new.clone();
     albums.lock().unwrap().push(new.into_inner());
+    status::Custom(Status::Created, Json(new_album))
 }
 
 #[launch]
